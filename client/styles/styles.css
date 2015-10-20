@@ -135,6 +135,26 @@ footer p {
     color: #c00;
 }
 
+#room {
+    font-size: 24px;
+    top: -7px;
+    position: relative;
+    margin-bottom: 16px;
+}
+
+.friends {
+    display: block !important;
+    margin-top: 3px;
+}
+
+#friends {
+    padding-top: 2px;
+}
+
+#friends-box {
+    display: none;
+}
+
 #tweet-stream {
     height: 530px;
     overflow: scroll;
@@ -153,11 +173,16 @@ footer p {
     font-size: 11px;
 }
 
-#yourself, #rooms {
+#myfriends {
+    height: 1000px;
+}
+
+#yourself, #rooms, #myfriends, #newroom {
     width: 140px;
     margin-right: 17px;
     font-size: larger;
     float: left;
+    margin-top: 3px;
 }
 
 #to-go {
@@ -201,10 +226,17 @@ footer p {
     display: none;;
 }
 
+#rooms-list {
+    width: 394px;
+}
+
 .form-labels {
     margin-bottom: 10px;
 }
 
+.friend-message {
+    font-weight: bold;
+}
 input, select {
     display: inline;
     width: 380px;

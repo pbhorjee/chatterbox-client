@@ -3,21 +3,16 @@
 $( document ).ready(function() {
 
   var $tweetStreamContainer = $('#tweet-stream');
+  $('#tweet').focus();
 
-  if (!/(&|\?)username=/.test(window.location.search)) {
-    var newSearch = window.location.search;
-    if (newSearch !== '' & newSearch !== '?') {
-      newSearch += '&';
-    }
-    
-    window.username = prompt('What is your name?', 'anonymous');
-  } else {
-    //get window.username =  from querystring
-  }
+  var re = /[?&]?([^=]+)=([^&]*)/g;
+  window.username = decodeURIComponent(re.exec(window.location.search)[2]);
 
   window.messages = [];
+  window.friends = [];
   window.roomnames = ["Lobby"];
   window.currentRoom = "Lobby";
+  $("#room-name").text(window.currentRoom);
 
   var getMessages = function() {
     getQuery("limit=1000;order=-createdAt", function(results) {
@@ -28,7 +23,7 @@ $( document ).ready(function() {
   }
 
   var getQuery = function(queryString, callback) {
-    console.log(queryString);
+    // console.log(queryString);
     $.ajax({
       url: 'https://api.parse.com/1/classes/chatterbox',
       type: 'GET',
@@ -38,7 +33,6 @@ $( document ).ready(function() {
       }
     });
   }
-
 
   var getRoomnames = function(data) {
     var newRoomnames = getData(data, "roomname");
@@ -62,21 +56,11 @@ $( document ).ready(function() {
   getMessages();
 
   var update = function() {
-  //   var query = {
-  //     where: {
-  //       createdAt: {
-  //         $gt: {
-  //           __type: "Date",
-  //           iso: lastMessageDate()
-  //         }
-  //       }
-  //     }
-  //   }
     var queryString = 'where={"createdAt":{"$gt":{"__type":"Date","iso":"' + lastMessageDate() + '"}}}';
 
     var newMessages = getQuery(queryString, function(results) {
-      console.log('# results: ' + results.length);
       if (results.length) {
+        var newRooms = false;
         logMessages(results);
         getRoomnames({results});
         messages = results.concat(messages);
@@ -84,20 +68,33 @@ $( document ).ready(function() {
     });
   }
 
-  setInterval(update, 1000);
+  var refresh = function() { setInterval(update, 10000) };
 
-  var postMessage = function(message) {
+  var postMessage = function(message, newRoom) {
+    clearInterval(refresh);
+
+    newRoom = newRoom || false;
     $.ajax({
       url: 'https://api.parse.com/1/classes/chatterbox',
       type: 'POST',
       data: JSON.stringify(message),
       contentType: 'application/json',
       success: function(data) {
+        update();
+        if ($('#newroomname').val()) {
+          if (newRoom){
+            selectRoom($('#newroomname').val());
+            $('#rooms-list').val($('#newroomname').val());
+            $('#newroomname').val('');
+          }
+        }        
       },
       error: function(data) {
         console.error('Failed to send. Error: ', data);
       }
     });
+
+    setTimeout(refresh, 10000);
   }
 
   var selectRoom = function(room) {
@@ -105,14 +102,13 @@ $( document ).ready(function() {
       return;
     }
     window.currentRoom = room;
-    $('#divMessages').empty();
+    $('#tweet-stream').empty();
+
     logMessages(messages);
+    $("#room-name").text(window.currentRoom);
   }
 
-/// JQUERY
-
   function logMessages(newMessages) {
-
     // Filter newMessages by room if it is set
     if (window.currentRoom === "Lobby") {
       newMessages = _.filter(newMessages, function(msg) {
@@ -121,41 +117,35 @@ $( document ).ready(function() {
     } else {
       newMessages = _.where(newMessages, {roomname: window.currentRoom});
     } 
-    
-    // var $messages = $('#divMessages');
-
-    // for (var i = newMessages.length - 1; i >= 0; i--) {
-    //   $messages.prepend("<div></div>");
-
-    //   var $newMessageContainer = $messages.children().first();
-
-    //   var date = new Date(newMessages[i].createdAt);
-      
-    //   $newMessageContainer.append("<div>" + _.escape(newMessages[i].text) + "</div>");
-    //   $newMessageContainer.append("<div>" + _.escape(newMessages[i].username) + "</div>");
-    //   $newMessageContainer.append("<div>" + date.getFullYear()+'-' + (date.getMonth()+1) + '-'+ date.getDate() + ": " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + "</div>");
-    // };
-
-
 
     for (var i = newMessages.length - 1; i >= 0; i--) {
+      var message = newMessages[i];
+      var username = message.username;
+
       var $tweetContainer = $(document.createElement('div'));
 
       var $tweetUser = $(document.createElement('div'));
-      $tweetUser.text('@' + _.escape(newMessages[i].username));
+      $tweetUser.text('@' + _.unescape(username));
       $tweetUser.addClass('user-link-clickable red');
+      $tweetUser.data('user', username);
+      $tweetUser.on("click", function () {
+        onUserClick($(this).data('user'));
+      });
 
       var $tweetText = $(document.createElement('div'));
-      $tweetText.text(_.escape(newMessages[i].text));
+      if (_.contains(window.friends, username)) {
+        $tweetText.addClass('friend-message');
+      }
+      $tweetText.text(_.unescape(message.text));
 
       var $tweetTimeSpacer = $(document.createElement('span'));
       $tweetTimeSpacer.text(' - ');
       $tweetTimeSpacer.addClass('ital small-text')
 
       var $tweetTime = $(document.createElement('span'));
-      $tweetTime.text(moment(newMessages[i].createdAt).startOf('minute').fromNow());
+      $tweetTime.text(moment(message.createdAt).startOf('minute').fromNow());
       $tweetTime.addClass('date-time ital small-text');
-      $tweetTime.data('create_at', tweet.created_at);
+      $tweetTime.data('create_at', message.createdAt);
 
       $tweetContainer.append($tweetUser);
       $tweetContainer.append($tweetTimeSpacer);
@@ -184,13 +174,47 @@ $( document ).ready(function() {
           $time.fadeIn(10);
       }
     }
-
-    var updateTimes = function () {
-        updateUserTimes($tweetStreamContainer)
-    };
-
-    setTimeout(updateTimes, 5000);
   };
+
+  setInterval(updateUserTimes, 5000);
+
+  function onUserClick(user, remove) {
+    if (remove) {
+      window.friends.splice(window.friends.indexOf(user), 1);
+    } else {
+      if (window.friends.indexOf(user) > -1) {
+        return;
+      }
+      window.friends.push(user);
+      window.friends.sort(function (a, b) {
+          return a.toLowerCase().localeCompare(b.toLowerCase());
+      });
+    }
+
+    $('#tweet-stream').empty();
+
+    if (window.friends.length === 0) {
+      $('#friends-box').hide();
+    } else {
+      $('#friends-box').show();
+    }
+
+    logMessages(messages);
+
+    $friends = $('#friends');
+    $friends.empty();
+
+    for (var f in window.friends) {
+      var $tweetUser = $(document.createElement('li'));
+      $tweetUser.text('@' + _.escape(window.friends[f]));
+      $tweetUser.addClass('friends user-link-clickable red');
+      $tweetUser.data('user', window.friends[f]);
+      $tweetUser.on("click", function () {
+        onUserClick($(this).data('user'), true);
+      });
+      $friends.append($tweetUser);
+    }
+  }
 
   function drawRoomsList() {
     var $roomsList = $('#rooms-list');
@@ -199,6 +223,8 @@ $( document ).ready(function() {
     for (var i = 0; i < roomnames.length; i++) {
       $roomsList.append("<option>" + roomnames[i] + "</option>");
     };
+
+    $roomsList.val(window.currentRoom)
 
     $roomsList.change(function() {
       selectRoom($(this).val());
@@ -214,22 +240,27 @@ $( document ).ready(function() {
         text: $('#tweet').val(),
         roomname: window.currentRoom
       }
+      var newRoom = false;
+      if ($('#newroomname').val()) {
+        newRoom = true;
+        newMessage.roomname = $('#newroomname').val();
+      }
 
-      postMessage(newMessage);
+      postMessage(newMessage, newRoom);
+      $('#tweet').val('');
     
       return false;
     }
   });
 
-  $('#tweetform').bind('keyup', function (e) {
+  $('#tweet').bind('change keyup', function (e) {
       var tweetLength = $('#tweet').val().length;
       var $charLeft = $('#to-go');
       if (tweetLength > 0) {
           $charLeft.text(160 - tweetLength + ' left!')
           $charLeft.css("visibility", "visible")
       } else {
-          $charLeft
-              .css("visibility", "hidden");
+          $charLeft.css("visibility", "hidden");
       }
   });
 

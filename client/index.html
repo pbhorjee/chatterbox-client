@@ -39,11 +39,11 @@
       <div class="grid">
 
         <div class="unit half">
+          <div id="room" class="red">Room: <span id="room-name" class="ital"></span></div>
           <div id="tweet-stream"></div>
         </div>
 
         <div class="unit half">
-
           <div id="tweet-form">
             <form id="tweetform" onsubmit="return noSubmit()">
               <div class="form-labels">
@@ -51,26 +51,26 @@
                 <input type="text" name="tweet" id="tweet" maxlength="160">
                 <span id="to-go" class="small-text"></span>
               </div>
-
+              <div class="form-labels">
+                <span id="newroom" class="ital red">New Room</span>
+                <input type="text" name="newroom" id="newroomname" maxlength="150">
+                <span id="to-go" class="small-text"></span>
+              </div>
               <div class="form-labels">
                 <span id="rooms" class="ital red">Select Room</span>
                 <select id="rooms-list"></select>
               </div>
             </form>
           </div>
-<!-- 
-          <div id="show-buttons">
-            <a id="show-mine" class="button small">Show my Twittles</a>
-            <a id="show-none" class="button small">Show no User Twittles</a>
+        </div>
+
+        <div class="unit half" id="friends-box">
+          <div class="form-labels">
+            <div id="myfriends" class="ital red">My Friends</div> 
+            <div>
+              <ul id="friends"></ul>
+            </div>
           </div>
- -->
-          <!-- <div id="user-name"></div> -->
-
-        <!--   <div id="user-tweets"></div> -->
-
-
-
-
         </div>
 
       </div>
