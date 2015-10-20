@@ -2,6 +2,8 @@
 
 $( document ).ready(function() {
 
+  var $tweetStreamContainer = $('#tweet-stream');
+
   if (!/(&|\?)username=/.test(window.location.search)) {
     var newSearch = window.location.search;
     if (newSearch !== '' & newSearch !== '?') {
@@ -120,43 +122,96 @@ $( document ).ready(function() {
       newMessages = _.where(newMessages, {roomname: window.currentRoom});
     } 
     
-    var $messages = $('#divMessages');
+    // var $messages = $('#divMessages');
+
+    // for (var i = newMessages.length - 1; i >= 0; i--) {
+    //   $messages.prepend("<div></div>");
+
+    //   var $newMessageContainer = $messages.children().first();
+
+    //   var date = new Date(newMessages[i].createdAt);
+      
+    //   $newMessageContainer.append("<div>" + _.escape(newMessages[i].text) + "</div>");
+    //   $newMessageContainer.append("<div>" + _.escape(newMessages[i].username) + "</div>");
+    //   $newMessageContainer.append("<div>" + date.getFullYear()+'-' + (date.getMonth()+1) + '-'+ date.getDate() + ": " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + "</div>");
+    // };
+
+
 
     for (var i = newMessages.length - 1; i >= 0; i--) {
-      $messages.prepend("<div></div>");
+      var $tweetContainer = $(document.createElement('div'));
 
-      var $newMessageContainer = $messages.children().first();
+      var $tweetUser = $(document.createElement('div'));
+      $tweetUser.text('@' + _.escape(newMessages[i].username));
+      $tweetUser.addClass('user-link-clickable red');
 
-      var date = new Date(newMessages[i].createdAt);
-      
-      $newMessageContainer.append("<div>" + _.escape(newMessages[i].text) + "</div>");
-      $newMessageContainer.append("<div>" + _.escape(newMessages[i].username) + "</div>");
-      $newMessageContainer.append("<div>" + date.getFullYear()+'-' + (date.getMonth()+1) + '-'+ date.getDate() + ": " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + "</div>");
-    };
+      var $tweetText = $(document.createElement('div'));
+      $tweetText.text(_.escape(newMessages[i].text));
+
+      var $tweetTimeSpacer = $(document.createElement('span'));
+      $tweetTimeSpacer.text(' - ');
+      $tweetTimeSpacer.addClass('ital small-text')
+
+      var $tweetTime = $(document.createElement('span'));
+      $tweetTime.text(moment(newMessages[i].createdAt).startOf('minute').fromNow());
+      $tweetTime.addClass('date-time ital small-text');
+      $tweetTime.data('create_at', tweet.created_at);
+
+      $tweetContainer.append($tweetUser);
+      $tweetContainer.append($tweetTimeSpacer);
+      $tweetContainer.append($tweetTime);
+      $tweetContainer.append($tweetText);
+
+      $tweetContainer.prependTo($tweetStreamContainer);
+      $tweetContainer.fadeIn();
+    }
+
+    updateUserTimes();
   }
+
+  function updateUserTimes() {
+    var allTimes = $tweetStreamContainer.find('.date-time');
+
+    for (var t = 0; t < allTimes.length; t++) {
+      var $time = $(allTimes[t]);
+      var dt = $time.data('create_at');
+      var newDtStr = moment(dt).startOf('minute').fromNow()
+      var oldDtStr = $time.text();
+
+      if (newDtStr !== oldDtStr) {
+          $time.fadeOut(10);
+          $time.text(newDtStr);
+          $time.fadeIn(10);
+      }
+    }
+
+    var updateTimes = function () {
+        updateUserTimes($tweetStreamContainer)
+    };
+
+    setTimeout(updateTimes, 5000);
+  };
 
   function drawRoomsList() {
     var $roomsList = $('#rooms-list');
     $roomsList.empty();
 
     for (var i = 0; i < roomnames.length; i++) {
-      $roomsList.append("<li>" + roomnames[i] + "</li>");
+      $roomsList.append("<option>" + roomnames[i] + "</option>");
     };
 
-    $roomsList.children().click(function() {
-      selectRoom($(this).text());
+    $roomsList.change(function() {
+      selectRoom($(this).val());
     });
   }
 
-  $('#chatter-form').bind('keypress', function (e) {
+  $('#tweetform').bind('keypress', function (e) {
     if (e.keyCode == 13) {
       e.preventDefault();
 
-      var inputMessage = $('#chatter-box').val()
-
       var newMessage = {
         username: window.username,
-        text: inputMessage,
+        text: $('#tweet').val(),
         roomname: window.currentRoom
       }
 
@@ -164,6 +219,18 @@ $( document ).ready(function() {
     
       return false;
     }
+  });
+
+  $('#tweetform').bind('keyup', function (e) {
+      var tweetLength = $('#tweet').val().length;
+      var $charLeft = $('#to-go');
+      if (tweetLength > 0) {
+          $charLeft.text(160 - tweetLength + ' left!')
+          $charLeft.css("visibility", "visible")
+      } else {
+          $charLeft
+              .css("visibility", "hidden");
+      }
   });
 
 });

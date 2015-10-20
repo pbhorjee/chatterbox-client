@@ -1,84 +1,256 @@
+/* TODO make a rounded border around each twittle
+-- TODO make a hover transition over each twittle
+-- TODO make each whole twittle clickable
+*/
+
+/* General */
+
 body {
-    background: #eee;
-    text-align: center;
-    padding: 0 25px;
-    font-family: arial, sans-serif;
+    font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: #444;
+    background: #FBF6F4;
+    text-shadow: 0 1px 0 rgba(255,255,255,.5);
 }
 
-#main {
-    width: 500px;
-    margin: auto;
-    text-align: left;
-    background: white;
-    padding: 50px 60px;
-    border: solid #ddd;
-    border-width: 0 1px 1px 1px;
+body > header,
+body > section,
+body > footer {
+    display: block;
+    width: 100%;
+    clear: both;
+    float: left;
 }
 
-#main h1 {
-    margin-top: 0;
-    font-size: 35px;
-    margin-bottom: 5px;
-    padding: 5px;
+h1, h2 {
+    font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: 700;
+    letter-spacing: -.03em;
+    margin-top: 20px;
+    margin-bottom: 0px;
 }
 
-#main h1 span {
-    font-style:italic;
+h1 {
+    font-size: 4em;
+    margin-top: 20px;
+    margin-bottom: -10px;
 }
 
-#main ul {
-    padding-left: 20px;
+h2 {
+    font-size: 2em;
+    margin-top: 0px;
+    margin-bottom: 0px;
 }
 
-#main .error {
-    border: 1px solid red;
-    background: #FDEFF0;
-    padding: 20px;
+a {
+    color: #c00;
+    text-decoration: none;
+    border-bottom: 1px solid #eee;
+    -webkit-transition: all .2s ease-in-out;
+    -moz-transition: all .2s ease-in-out;
+    transition: all .2s ease-in-out;
 }
 
-#main .success {
-    margin-top: 25px;
+header, section {
+    border-bottom: 1px solid #eee;
 }
 
-#main .success code {
-    font-size: 12px;
-    color: green;
-    line-height: 13px;
+header, section, footer {
+    border-top: 1px solid #fff;
 }
 
-form {
-    padding: 20px;
-    padding-left: 0;
+section, footer {
+    padding: 30px 0;
+}
+
+header h1 a {
+    color: #c00;
+    border-bottom: none;
+}
+
+#github {
+    position: absolute;
+    right: 100px;
+    top: 50px;
+}
+
+.lead {
+    font-size: 1.6em;
+}
+
+.button {
+    border-radius: 5px;
+    background: #efefef;
+    background-image: -moz-linear-gradient(#FCFCFC, #EFEFEF);
+    background-image: -webkit-linear-gradient(#FCFCFC, #EFEFEF);
+    background-image: -ms-linear-gradient(#FCFCFC, #EFEFEF);
+    background-image: linear-gradient(#FCFCFC, #EFEFEF);
+    border: 1px solid #DDDDDD;
+    box-shadow: 0 1px 3px 0 rgba(0,0,0,.1);
+    padding: 8px 16px;
+    text-shadow: 0 1px 0 #fff;
+    font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    display: inline-block;
+    margin-bottom: .5em;
+}
+
+.button.small {
+    font-weight: normal;
+    text-transform: none;
+    padding: 3px 16px;
+}
+
+.button:hover, .button:focus {
+    outline: none;
+    border: 1px solid rgba(255,0,0,.5);
+    box-shadow: 0 1px 3px 0 rgba(0,0,0,.1), 0 0 10px rgba(255,0,0,.3);
+}
+
+footer p {
+    margin: 0;
+    font-size: 1em;
+}
+
+@media (min-width: 960px){
+    h1 {
+        font-size: 5em;
+    }
+    h2 {
+        font-size: 2.6em;
+    }
+    h3 {
+        font-size: 2em;
+    }
+    .lead {
+        font-size: 1.2em;
+    }
+}
+
+.ital {
+    font-style: italic;
+}
+
+.red {
+    color: #c00;
+}
+
+#tweet-stream {
+    height: 530px;
+    overflow: scroll;
+}
+
+#user-tweets {
+    height: 340px;
+    overflow: scroll;
+}
+
+#tweet-stream>div, #user-tweets>div {
     margin-bottom: 20px;
 }
 
-form input[type=text] {
-    margin-right: 10px;
-    width: 70%;
-    font-size: 12px;
-    padding: 5px;
+.small-text {
+    font-size: 11px;
 }
 
-.chat {
-    padding: 5px;
-    margin-bottom: 5px;
-    background-color: #eee;
+#yourself, #rooms {
+    width: 140px;
+    margin-right: 17px;
+    font-size: larger;
+    float: left;
 }
 
-.chat .username {
-    font-weight: 800;
+#to-go {
+    margin-left: 160px;
+    visibility: hidden;
 }
 
-.chat:hover {
-    background-color: #ddd;
+.user-link-clickable, #show-mine, #show-none {
+    cursor: pointer;
 }
 
-.spinner {
-    float: right;
-    height: 46px;
-    margin-bottom: 5px;
+.user-link-clickable {
+    display: inline-block;
 }
 
-.spinner img {
-    padding: 10px;
+#user-name, #user-tweets, #show-buttons {
+    padding-bottom: 13px;
+}
+
+#tweet-form {
+    margin-bottom: 0px;
+}
+
+#user-tweets {
+    margin-top: 0px;
+}
+
+#user-name, #user-tweets, #show-buttons {
+    padding-top: 13px;
+}
+
+#user-name {
+    font-size: 20px;
+}
+
+#show-buttons {
+    border-bottom: 1px solid #eee;
+}
+
+#show-none {
+    display: none;;
+}
+
+.form-labels {
+    margin-bottom: 10px;
+}
+
+input, select {
+    display: inline;
+    width: 380px;
+    padding: 6px;
+    border: 1px dotted #999;
+    border-radius: 4px;
+    font-family: inherit;
+    outline: none;
+    background-color: white;
+    -webkit-appearance: none;
+}
+
+
+/* animate elipses */
+.one {
+    opacity: 0;
+    -webkit-animation: dot 1.3s infinite;
+    -webkit-animation-delay: 0.0s;
+    animation: dot 1.3s infinite;
+    animation-delay: 0.0s;
+}
+
+.two {
+    opacity: 0;
+    -webkit-animation: dot 1.3s infinite;
+    -webkit-animation-delay: 0.2s;
+    animation: dot 1.3s infinite;
+    animation-delay: 0.2s;
+}
+
+.three {
+    opacity: 0;
+    -webkit-animation: dot 1.3s infinite;
+    -webkit-animation-delay: 0.3s;
+    animation: dot 1.3s infinite;
+    animation-delay: 0.3s;
+}
+
+@-webkit-keyframes dot {
+    0% { opacity: 0; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+@keyframes dot {
+    0% { opacity: 0; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
 }

@@ -3,31 +3,78 @@
   <head>
     <meta charset="utf-8">
     <title>chatterbox</title>
+
+    <link rel="stylesheet" type="text/css" href="bower_components/normalize-css/normalize.css">
+    <link rel="stylesheet" type="text/css" href="bower_components/gridism/gridism.css">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
     <link rel="stylesheet" href="styles/styles.css">
 
-    <!-- dependencies -->
     <script src="bower_components/jquery/jquery.min.js"></script>
     <script src="bower_components/underscore/underscore-min.js"></script>
-    <!-- your scripts -->
+    <script src="bower_components/moment/min/moment.min.js"></script>
+
     <script src="env/config.js"></script>
     <script src="scripts/app.js"></script>
   </head>
 
-  <body>
-    <div id="main">
-      <h1>chatterbox</h1>
+  <body class="wrap wider">
 
-      <div id="divForm">
-        <form id="chatter-form">
-          <input type="textbox" id="chatter-box" maxlength="300">
-        </form>
+
+    <header>
+      <div class="grid">
+
+        <div class="unit whole center-on-mobiles">
+          <h1><a href="https://github.com/pbhorjee/2015-10-chatterbox-client">Chatterbox!</a></h1>
+          <p class="lead">because <span class="one">.</span><span class="two">.</span><span class="three">.</span> you know, you gotta do it or you don't exist or whatever.</p>
+          <span id="github">
+            <a href="https://github.com/pbhorjee/2015-10-chatterbox-client" class="button" target="_blank">View on GitHub</a>
+          </span>
+        </div>
+
       </div>
+    </header>
 
-      <div id="divRooms">
-        <ul id="rooms-list"></ul>
+
+    <section class="twittles">
+      <div class="grid">
+
+        <div class="unit half">
+          <div id="tweet-stream"></div>
+        </div>
+
+        <div class="unit half">
+
+          <div id="tweet-form">
+            <form id="tweetform" onsubmit="return noSubmit()">
+              <div class="form-labels">
+                <span id="yourself" class="ital red">Chat Yourself!</span> 
+                <input type="text" name="tweet" id="tweet" maxlength="160">
+                <span id="to-go" class="small-text"></span>
+              </div>
+
+              <div class="form-labels">
+                <span id="rooms" class="ital red">Select Room</span>
+                <select id="rooms-list"></select>
+              </div>
+            </form>
+          </div>
+<!-- 
+          <div id="show-buttons">
+            <a id="show-mine" class="button small">Show my Twittles</a>
+            <a id="show-none" class="button small">Show no User Twittles</a>
+          </div>
+ -->
+          <!-- <div id="user-name"></div> -->
+
+        <!--   <div id="user-tweets"></div> -->
+
+
+
+
+        </div>
+
       </div>
+    </section>
 
-      <div id="divMessages"></div>
-    </div>
   </body>
 </html>
