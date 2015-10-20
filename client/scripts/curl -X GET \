@@ -1,0 +1,6 @@
+curl -X GET \
+  -H "X-Parse-Application-Id: wPfavNOxOKTzlXiMq9r226nSo5Vl5aMFfEcvAupE" \
+  -H "X-Parse-REST-API-Key: eCGqXWtDjoZofGzf785KvSODrUrXURbL6JCQqaHj" \
+  -G \
+  --data-urlencode 'where={"createdAt":{"$gt":{"__type":"Date","iso":"2015-10-20T01:56:53.269Z"}}}' \
+  https://api.parse.com/1/classes/chatterbox

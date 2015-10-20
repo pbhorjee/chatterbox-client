@@ -7,14 +7,27 @@
 
     <!-- dependencies -->
     <script src="bower_components/jquery/jquery.min.js"></script>
+    <script src="bower_components/underscore/underscore-min.js"></script>
     <!-- your scripts -->
     <script src="env/config.js"></script>
     <script src="scripts/app.js"></script>
   </head>
+
   <body>
     <div id="main">
       <h1>chatterbox</h1>
-      <!-- Your HTML goes here! -->
+
+      <div id="divForm">
+        <form id="chatter-form">
+          <input type="textbox" id="chatter-box" maxlength="300">
+        </form>
+      </div>
+
+      <div id="divRooms">
+        <ul id="rooms-list"></ul>
+      </div>
+
+      <div id="divMessages"></div>
     </div>
   </body>
 </html>
