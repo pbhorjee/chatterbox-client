@@ -93,7 +93,7 @@ $( document ).ready(function() {
       }
     });
 
-    setTimeout(refresh, 10000);
+    refresh();
   }
 
   var selectRoom = function(room) {
