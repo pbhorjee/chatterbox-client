@@ -80,7 +80,6 @@ $( document ).ready(function() {
       data: JSON.stringify(message),
       contentType: 'application/json',
       success: function(data) {
-        update();
         if ($('#newroomname').val()) {
           if (newRoom){
             selectRoom($('#newroomname').val());
