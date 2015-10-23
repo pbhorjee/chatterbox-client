@@ -2,11 +2,17 @@
 
 $( document ).ready(function() {
 
+  if (!/(&|\?)username=/.test(window.location.search)) {
+    var newSearch = window.location.search;
+    if (newSearch !== '' & newSearch !== '?') {
+      newSearch += '&';
+    }
+    newSearch += 'username=' + (prompt('What is your name?') || 'anonymous');
+    window.location.search = newSearch;
+  }
+
   var $tweetStreamContainer = $('#tweet-stream');
   $('#tweet').focus();
-
-  var re = /[?&]?([^=]+)=([^&]*)/g;
-  window.username = decodeURIComponent(re.exec(window.location.search)[2]);
 
   window.messages = [];
   window.friends = [];
@@ -68,7 +74,7 @@ $( document ).ready(function() {
     });
   }
 
-  var refresh = function() { setInterval(update, 10000) };
+  var refresh = function() { setInterval(update, 5000) };
 
   var postMessage = function(message, newRoom) {
     clearInterval(refresh);
